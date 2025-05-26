@@ -47,8 +47,8 @@ The `optics_test.py` script accepts the following options:
   - Default: "PPSOpticalFunctions_test"
 
 - `opticssource`: The source of optics data
-  - Can be a CondDB , use "frontier://FrontierProd/CMS_CONDITIONS"
-  - Can be a local SQLite file, use "sqlite_file:/path/to/file.db"
+  - Can be a CondDB: use "frontier://FrontierProd/CMS_CONDITIONS"
+  - Can be a local SQLite file: use "sqlite_file:/path/to/file.db"
   - Can also be "nonDB" to read optics from ROOT files hardcoded in CMSSW
   - Default: "nonDB"
 
