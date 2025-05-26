@@ -2,6 +2,22 @@
 
 This repository contains tools for testing and validating CTPPS optics.
 
+## Setup
+
+To set up the environment for running the optics test, you need to source the CMSSW release and set up the necessary environment variables. Here’s how you can do it:
+```
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+scram project CMSSW CMSSW_15_1_0_pre1
+cd CMSSW_15_1_0_pre1
+cmsenv
+```
+
+Get the code from the repository:
+```bash
+git clone https://github.com/CTPPS/ctpps-optics-test.git
+cd ctpps-optics-test
+```
+
 ## Usage
 
 The optics test can be run with data from three different sources:
