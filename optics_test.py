@@ -13,7 +13,7 @@ options.register('opticssource', "nonDB",
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
                  "optics source (DB locations like 'frontier://FrontierProd/CMS_CONDITIONS'\n" +
-                 "   'sqlite_file:/afs/cern.ch/user/w/wcarvalh/public/CTPPS/optical_functions/PPSOpticalFunctions_2016-2022.db')\n" +
+                 "   'sqlite_file:/afs/cern.ch/user/w/wcarvalh/public/CTPPS/optical_functions/PPSOpticalFunctions_2025_v1.db')\n" +
                  "  or 'nonDB' which reads optics source as ROOT files from CMSSW"
                  )
 options.register('runnumber', 1,
@@ -62,8 +62,8 @@ process.RandomNumberGeneratorService = cms.Service(
 process.load("Configuration.Generator.randomXiThetaGunProducer_cfi")
 
 # generate LHCInfo record (xangle, energy, etc)
-# see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/CalibPPS/ESProducers/plugins/CTPPSLHCInfoESSource.cc
-# TODO consider using https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/CalibPPS/ESProducers/plugins/CTPPSLHCInfoRandomXangleESSource.cc
+# see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/CalibPPS/ESProducers/plugins/CTPPSLHCInfoESSource.cc
+# TODO consider using https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/CalibPPS/ESProducers/plugins/CTPPSLHCInfoRandomXangleESSource.cc
 process.ctppsESSourceLHCInfo = cms.ESSource(
     "CTPPSLHCInfoESSource",
     label=cms.string(""),
@@ -75,10 +75,10 @@ process.ctppsESSourceLHCInfo = cms.ESSource(
 if options.opticssource == 'nonDB':
     # extract CTPPS optics from ROOT files
 
-    # see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/CalibPPS/ESProducers/python/ctppsOpticalFunctions_non_DB_cff.py
+    # see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/CalibPPS/ESProducers/python/ctppsOpticalFunctions_non_DB_cff.py
     from CalibPPS.ESProducers.ctppsOpticalFunctions_non_DB_cff import optics_2022
 
-    # see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/CalibPPS/ESProducers/plugins/CTPPSOpticalFunctionsESSource.cc
+    # see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/CalibPPS/ESProducers/plugins/CTPPSOpticalFunctionsESSource.cc
     process.ppsESSourceOptics = cms.ESSource(
         "CTPPSOpticalFunctionsESSource",
         configuration=cms.VPSet(optics_2022)
@@ -89,7 +89,6 @@ else:
     process.ppsESSourceOptics = cms.ESSource(
         "PoolDBESSource",
         connect=cms.string(options.opticssource),
-        timetype=cms.untracked.string('runnumber'),
         DumpStat=cms.untracked.bool(True),
         toGet=cms.VPSet(
             cms.PSet(
@@ -100,7 +99,7 @@ else:
     )
 
 # transforms LHCOpticalFunctionsSetCollection into LHCInterpolatedOpticalFunctionsSetCollection based on xangle extracted from LHCInfo record
-# see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/CalibPPS/ESProducers/plugins/CTPPSInterpolatedOpticalFunctionsESSource.cc
+# see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/CalibPPS/ESProducers/plugins/CTPPSInterpolatedOpticalFunctionsESSource.cc
 process.ctppsInterpolatedOpticalFunctionsESSource = cms.ESProducer(
     "CTPPSInterpolatedOpticalFunctionsESSource",
     lhcInfoLabel=cms.string(""),
@@ -109,7 +108,7 @@ process.ctppsInterpolatedOpticalFunctionsESSource = cms.ESProducer(
 )
 
 # LHCInfo plotter
-# see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/Validation/CTPPS/plugins/CTPPSLHCInfoPlotter.cc
+# see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/Validation/CTPPS/plugins/CTPPSLHCInfoPlotter.cc
 process.ctppsLHCInfoPlotter = cms.EDAnalyzer(
     "CTPPSLHCInfoPlotter",
     lhcInfoLabel=cms.string(""),
@@ -118,7 +117,7 @@ process.ctppsLHCInfoPlotter = cms.EDAnalyzer(
 )
 
 # optics plotter, needs LHCInterpolatedOpticalFunctionsSetCollection produced by CTPPSInterpolatedOpticalFunctionsESSource
-# see https://github.com/cms-sw/cmssw/blob/CMSSW_12_2_X/Validation/CTPPS/plugins/CTPPSOpticsPlotter.cc
+# see https://github.com/cms-sw/cmssw/blob/CMSSW_15_1_X/Validation/CTPPS/plugins/CTPPSOpticsPlotter.cc
 out_file_opt_source = 'DB'
 if options.opticssource == "nonDB":
     out_file_opt_source = 'nonDB'
